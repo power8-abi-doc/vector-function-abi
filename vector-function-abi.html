@@ -34,7 +34,7 @@ obey. These rules consist of:
 <ul>
 <li> Calling convention (how arguments are passed to the vector function and
 how values are returned from the vector function)</li>
-<li> Vector length< /li>
+<li> Vector length </li>
 <li> Vector function masking </li>
 <li> Mapping from existing data types to vector data types </li>
 <li> Vector function name mangling </li>
@@ -56,6 +56,7 @@ If the vectorlength clause is not used, the notion of the function's
 "characteristic data type" is used to compute the vector length. The
 characteristic data type is defined in the following order:
 </li>
+<li>
 <ol>
 <li> For non-void function, the characteristic data type is the return type </li>
 <li> If the function has any non-uniform, non-linear parameters, then the
@@ -65,9 +66,8 @@ struct, union or class type which is pass-by-value (except for the type that
 maps to the built-in complex data type), the characteristic data type is int. </li>
 <li> If none of the three cases above applies, the characteristic data type is
 int. </li>
-
 </ol>
-
+</li>
 </ol>
 VLEN is then determined based on the characteristic data type and the POWER8
 vector register size. The formula is:
