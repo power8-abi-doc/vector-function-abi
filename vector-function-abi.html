@@ -26,10 +26,11 @@ This ABI defines the details of the caller-callee interface for vector
 functions; including parameter passing to and returning values from vector
 functions.
 </li>
-<li><h2> Vector Function ABI </h2></li>
+<li><h2> Vector Function ABI </h2>
 
 The vector function ABI defines a set of rules that the caller and callee must
 obey. These rules consist of:
+</li>
 <ul>
 <li> Calling convention (how arguments are passed to the vector function and
 how values are returned from the vector function)</li>
@@ -42,19 +43,19 @@ how values are returned from the vector function)</li>
 </ol>
 
 <ol>
-<li><h2> Calling Convention </h2></li>
+<li><h2> Calling Convention </h2>
 All functions (including compiler-created vector functions) use the Function
 Calling Sequence defined in OpenPOWER 64-bit ELF V2 ABI Specification for Power
 Architecture.
-
-<li><h2> Vector Length </h2></li>
+</li>
+<li><h2> Vector Length </h2>
 Every vector variant of a function has a vector length (VLEN). If the
 vectorlength clause is used, then VLEN is the value of the argument of that
 clause. VLEN must be an integer power of 2.
 If the vectorlength clause is not used, the notion of the function's
 "characteristic data type" is used to compute the vector length. The
 characteristic data type is defined in the following order:
-
+</li>
 <ol>
 <li> For non-void function, the characteristic data type is the return type </li>
 <li> If the function has any non-uniform, non-linear parameters, then the
@@ -67,18 +68,14 @@ int. </li>
 
 </ol>
 
+</ol>
 VLEN is then determined based on the characteristic data type and the POWER8
 vector register size. The formula is:
 
 VLEN = maximum_sizeof_POWER8_vector_register(characteristic_data_type) /
 sizeof(characteristic_data_type)
 
-
-</ol>
-
 </p>
-
-
 
 </body>
 </html>
