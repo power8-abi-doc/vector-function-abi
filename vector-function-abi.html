@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<body>
+
+<h1>
+Vector Function Application Binary Interface Specification for POWER8
+</h1>
+
+<p style="page-break-before: always">
+<ol>
+<li><h2> Vector Function Overview </h2></li>
+
+The vector (simd in OpenMP literature) function annotation applies to C/C++
+functions. Either OpenMP pragma or GCC __attribute__ syntax can be used to
+enable function vectorization.
+
+Use of simd annotation on function declaration or definition allows the
+compiler to create vector versions of a function from the scalar function
+definition provided. The vector versions of functions are used, when
+appropriate, in the optimization steps of compilation (e.g. automatic loop
+vectorization)
+
+This ABI defines the details of the caller-callee interface for vector
+functions; including parameter passing to and returning values from vector
+functions.
+
+<li><h2> Vector Function ABI </h2></li>
+
+The vector function ABI defines a set of rules that the caller and callee must
+obey. These rules consist of:
+<ul>
+<li> Calling convention (how arguments are passed to the vector function and
+how values are returned from the vector function)</li>
+<li> Vector length< /li>
+<li> Vector function masking </li>
+<li> Mapping from existing data types to vector data types </li>
+<li> Vector function name mangling </li>
+</ul>
+
+</ol>
+
+<ol>
+<li><h2> Calling Convention </h2></li>
+All functions (including compiler-created vector functions) use the Function
+Calling Sequence defined in OpenPOWER 64-bit ELF V2 ABI Specification for Power
+Architecture.
+
+<li><h2> Vector Length </h2></li>
+Every vector variant of a function has a vector length (VLEN). If the
+vectorlength clause is used, then VLEN is the value of the argument of that
+clause. VLEN must be an integer power of 2.
+If the vectorlength clause is not used, the notion of the function's
+"characteristic data type" is used to compute the vector length. The
+characteristic data type is defined in the following order:
+
+<ol>
+<li> For non-void function, the characteristic data type is the return type </li>
+<li> If the function has any non-uniform, non-linear parameters, then the
+characteristic data type is the type of the first such parameter. </li>
+<li> If the characteristic data type determined by either preceding item is
+struct, union or class type which is pass-by-value (except for the type that
+maps to the built-in complex data type), the characteristic data type is int. </li>
+<li> If none of the three cases above applies, the characteristic data type is
+int. </li>
+
+</ol>
+
+VLEN is then determined based on the characteristic data type and the POWER8
+vector register size. The formula is:
+
+VLEN = maximum_sizeof_POWER8_vector_register(characteristic_data_type) /
+sizeof(characteristic_data_type)
+
+
+</ol>
+
+</p>
+
+
+
+</body>
+</html>
