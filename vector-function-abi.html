@@ -36,33 +36,49 @@ how values are returned from the vector function) </li>
 <li> Vector function masking </li>
 <li> Mapping from existing data types to vector data types </li>
 <li> Vector function name mangling </li>
+</ul>
 
 <h2> Calling Convention </h2>
 All functions (including compiler-created vector functions) use the Function
 Calling Sequence defined in OpenPOWER 64-bit ELF V2 ABI Specification for Power
 Architecture.
 <h2> Vector Length </h2>
-Every vector variant of a function has a vector length (VLEN). If the
-vectorlength clause is used, then VLEN is the value of the argument of that
-clause. VLEN must be an integer power of 2.
-If the vectorlength clause is not used, the notion of the function's
-"characteristic data type" is used to compute the vector length. The
-characteristic data type is defined in the following order:
+A set of vector lengths VLEN is associated with a vector function F. The algorithm
+which determines the value(s) for VLEN is described below after a few required
+definitions are given.
+<h3> Lane Size of a function parameter or function return value </h3>
+Lane Size of P, or LS(P) is defined as:
+<ul>
+<li> If MTV(P) is false and P is a pointer or reference to some type T for
+which PBV(T) is true, LS(P) = sizeof(T). </li>
+<li> If PBV(T(P)) is true, LS(P) = sizeof(P). </li>
+<li> Otherwise LS(P) = sizeof(uintptr_t). </li>
+</ul>
+<h3> Narrowest and Widest Data Size of a Function </h3>
+For a function f, the following concepts are defined:
+<ul>
+<li> The Narrowest Data Size of f, or NDS(f), is the minimum of the lane size
+LS(P) among all input parameters and return value &ltP&gt of f. </li>
+<li> The Widest Data Size of f, or WDS(f), is the maximum of the lane size
+LS(P) among all input parameters and return value &ltP&gt of f. </li>
+</ul>
+By definition the only values that NDS(f) and WDS(f) can take are 1, 2, 4, 8,
+and 16.
 
-For non-void function, the characteristic data type is the return type
-If the function has any non-uniform, non-linear parameters, then the
-characteristic data type is the type of the first such parameter.
-If the characteristic data type determined by either preceding item is
-struct, union or class type which is pass-by-value (except for the type that
-maps to the built-in complex data type), the characteristic data type is int.
-If none of the three cases above applies, the characteristic data type is
-int.
+The rules for determining VLEN are:
+<ul>
+<li> If simdlen(len) is specified then VLEN=len. The value of len must be a
+power of 2.</li>
+<li> If simdlen is not specified, then VLEN is set using rules:</li>
+</ul>
 
-VLEN is then determined based on the characteristic data type and the POWER8
-vector register size. The formula is:
+<ol>
+<li> if NDS(f) = 1, then VLEN = 16, 8; </li>
+<li> if NDS(f) = 2, then VLEN = 8, 4; </li>
+<li> if NDS(f) = 4, then VLEN = 4, 2; </li>
+<li> if NDS(f) = 8 or NDS(f) = 16, then VLEN = 2; </li>
+</ol>
 
-VLEN = maximum_sizeof_POWER8_vector_register(characteristic_data_type) /
-sizeof(characteristic_data_type)
 
 </body>
 </html>
