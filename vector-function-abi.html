@@ -23,17 +23,19 @@ vectorization)
 
 This ABI defines the details of the caller-callee interface for vector
 functions; including parameter passing to and returning values from vector
+functions and C/C++ syntax used to inform GCC of features of the relevant
 functions.
 <h2> Vector Function ABI </h2>
 
 The vector function ABI defines a set of rules that the caller and callee must
 obey. These rules consist of:
-Calling convention (how arguments are passed to the vector function and
-how values are returned from the vector function)
-Vector length
-Vector function masking
-Mapping from existing data types to vector data types
-Vector function name mangling
+<ul>
+<li> Calling convention (how arguments are passed to the vector function and
+how values are returned from the vector function) </li>
+<li> Vector length </li>
+<li> Vector function masking </li>
+<li> Mapping from existing data types to vector data types </li>
+<li> Vector function name mangling </li>
 
 <h2> Calling Convention </h2>
 All functions (including compiler-created vector functions) use the Function
