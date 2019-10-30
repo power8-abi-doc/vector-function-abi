@@ -103,5 +103,52 @@ then MTV(P) is false.
 </ol>
 
 
+<h3> Pass By Value </h3>
+When a scalar parameter maps to a vector, that vector sometimes contains the
+values of the scalar parameters and sometimes contains the addresses of the
+scalar parameters. The predicate Pass By Value PBV(T) is true if the former
+case applies to parameters of type T; it is false if the latter case applies.
+The predicate is defined as follows:
+<ol>
+<li> PBV(T) is true if (a) T is an integer, floating-point or pointer type and
+(b) sizeof(T) is 1, 2, 4, or 8. </li>
+<li> PBV(T) is true if T is a complex type with components of type T' and if
+PBV(T') is true. </li>
+<li> Otherwise PBV(T) is false. </li>
+</ol>
+
+<h3> Parameter and return value mapping </h3>
+When mapping the return value or an input parameter &ltP&gt of the scalar
+function to the corresponding MAP(P) in the vector function, the following
+rules apply:
+<ol>
+<li> If MTV(P) is false, then MAP(P) is P. </li>
+<li> Otherwise, MTV(P) is true, and MAP(P) is defined as:
+<ol>
+<li>If PBV(T(P)) is false, MAP(P) is a vector of VLEN elements of type
+uintptr_t. </li>
+<li> If T(P) is a complex type with components of type T, MAP(P) is a vector of
+2*VLEN elements of type T. </li>
+<li> Otherwise MAP(P) is a vector of VLEN elements of type T(P). </li>
+An optional {not}inbranch clause defines whether or not a vector mask parameter
+is added as the last input parameter of F, according to the rules in table NNN
+in chapter NNN. The vector mask type is selected by building a vector of VLEN
+elements consisting of unsigned integers of NDS(f) bytes. The generation of the
+values in the mask parameter is described in section NNN.
+</ol>
+</li>
+<li>In all cases, when &ltP&gt is the return value, and:
+<ol>
+<li> MTV(P) = true. </li>
+<li> PBV(P) = false. </li>
+<li> MAP(P) is a vector of pointers. </li>
+</ol>
+Then the return type of the associated vector function is void, and MAP(P)
+becomes the first parameter of the vector function. The caller is responsible
+for allocating the memory associated with the pointers in MAP(P).
+</li>
+</ol>
+
+</ol>
 </body>
 </html>
