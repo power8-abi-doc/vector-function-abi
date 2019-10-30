@@ -80,5 +80,28 @@ power of 2.</li>
 </ol>
 
 
+<h2>  Mapping from existing data types to vector data types </h2>
+One or more vector functions F are associated with an original scalar function
+f. The return value and each function parameter of f are mapped to unique return
+value and input parameter of F, respectively, named Mapping of P or MAP(P). The
+type of these vector function return value and input parameters depends on the
+following rules. Their order is the same as in the original scalar function f.
+<h3> Maps to Vector </h3>
+To each &ltP&gt, a true &#47 false predicate "P Maps to Vector," or MTV(P), is
+associated as follows:
+<ol>
+<li> If &ltP&gt is an input parameter such that:
+<ol>
+<li> &ltP&gt is a uniform value, or </li>
+<li> &ltP&gt is a linear value and not a reference marked with val or no linear
+modifiers, </li>
+then MTV(P) is false.
+</ol>
+</li>
+<li> If P is a void return value, then MTV(P) is false; </li>
+<li> In all other cases, MTV(P) is true. </li>
+</ol>
+
+
 </body>
 </html>
