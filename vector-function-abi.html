@@ -32,9 +32,9 @@ obey. These rules consist of:
 <ul>
 <li> Calling convention (how arguments are passed to the vector function and
 how values are returned from the vector function) </li>
+<li> Mapping from existing data types to vector data types </li>
 <li> Vector length </li>
 <li> Vector function masking </li>
-<li> Mapping from existing data types to vector data types </li>
 <li> Vector function name mangling </li>
 </ul>
 
@@ -42,44 +42,6 @@ how values are returned from the vector function) </li>
 All functions (including compiler-created vector functions) use the Function
 Calling Sequence defined in OpenPOWER 64-bit ELF V2 ABI Specification for Power
 Architecture.
-<h2> Vector Length </h2>
-A set of vector lengths VLEN is associated with a vector function F. The algorithm
-which determines the value(s) for VLEN is described below after a few required
-definitions are given.
-<h3> Lane Size of a function parameter or function return value </h3>
-Lane Size of P, or LS(P) is defined as:
-<ul>
-<li> If MTV(P) is false and P is a pointer or reference to some type T for
-which PBV(T) is true, LS(P) = sizeof(T). </li>
-<li> If PBV(T(P)) is true, LS(P) = sizeof(P). </li>
-<li> Otherwise LS(P) = sizeof(uintptr_t). </li>
-</ul>
-<h3> Narrowest and Widest Data Size of a Function </h3>
-For a function f, the following concepts are defined:
-<ul>
-<li> The Narrowest Data Size of f, or NDS(f), is the minimum of the lane size
-LS(P) among all input parameters and return value &ltP&gt of f. </li>
-<li> The Widest Data Size of f, or WDS(f), is the maximum of the lane size
-LS(P) among all input parameters and return value &ltP&gt of f. </li>
-</ul>
-By definition the only values that NDS(f) and WDS(f) can take are 1, 2, 4, 8,
-and 16.
-
-The rules for determining VLEN are:
-<ul>
-<li> If simdlen(len) is specified then VLEN=len. The value of len must be a
-power of 2.</li>
-<li> If simdlen is not specified, then VLEN is set using rules:</li>
-</ul>
-
-<ol>
-<li> if NDS(f) = 1, then VLEN = 16, 8; </li>
-<li> if NDS(f) = 2, then VLEN = 8, 4; </li>
-<li> if NDS(f) = 4, then VLEN = 4, 2; </li>
-<li> if NDS(f) = 8 or NDS(f) = 16, then VLEN = 2; </li>
-</ol>
-
-
 <h2>  Mapping from existing data types to vector data types </h2>
 One or more vector functions F are associated with an original scalar function
 f. The return value and each function parameter of f are mapped to unique return
@@ -148,6 +110,45 @@ becomes the first parameter of the vector function. The caller is responsible
 for allocating the memory associated with the pointers in MAP(P).
 </li>
 </ol>
+
+<h2> Vector Length </h2>
+A set of vector lengths VLEN is associated with a vector function F. The algorithm
+which determines the value(s) for VLEN is described below after a few required
+definitions are given.
+<h3> Lane Size of a function parameter or function return value </h3>
+Lane Size of P, or LS(P) is defined as:
+<ul>
+<li> If MTV(P) is false and P is a pointer or reference to some type T for
+which PBV(T) is true, LS(P) = sizeof(T). </li>
+<li> If PBV(T(P)) is true, LS(P) = sizeof(P). </li>
+<li> Otherwise LS(P) = sizeof(uintptr_t). </li>
+</ul>
+<h3> Narrowest and Widest Data Size of a Function </h3>
+For a function f, the following concepts are defined:
+<ul>
+<li> The Narrowest Data Size of f, or NDS(f), is the minimum of the lane size
+LS(P) among all input parameters and return value &ltP&gt of f. </li>
+<li> The Widest Data Size of f, or WDS(f), is the maximum of the lane size
+LS(P) among all input parameters and return value &ltP&gt of f. </li>
+</ul>
+By definition the only values that NDS(f) and WDS(f) can take are 1, 2, 4, 8,
+and 16.
+
+The rules for determining VLEN are:
+<ul>
+<li> If simdlen(len) is specified then VLEN=len. The value of len must be a
+power of 2.</li>
+<li> If simdlen is not specified, then VLEN is set using rules:</li>
+</ul>
+
+<ol>
+<li> if NDS(f) = 1, then VLEN = 16, 8; </li>
+<li> if NDS(f) = 2, then VLEN = 8, 4; </li>
+<li> if NDS(f) = 4, then VLEN = 4, 2; </li>
+<li> if NDS(f) = 8 or NDS(f) = 16, then VLEN = 2; </li>
+</ol>
+
+
 
 </ol>
 </body>
