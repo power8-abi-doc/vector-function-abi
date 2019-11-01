@@ -166,21 +166,21 @@ perform function matching when vectorizing code at call sites.  The vector
 function name is mangled as the concatenation of the following items:
 
 &ltprefix&gt &ltisa&gt &ltmask&gt &ltlen&gt &ltparameters&gt "_"
-&ltoriginal_name&gt <br>
-&ltprefix&gt := "_ZGV" <br>
-&ltisa&gt := "b" (VSX) <br>
+&ltoriginal_name&gt <br> <br>
+&ltprefix&gt := "_ZGV" <br> <br>
+&ltisa&gt := "b" (VSX) <br> <br>
 &ltmask&gt := "N" (No Mask) <br>
-            | "M" (Mask) <br>
-&ltlen&gt := VLEN <br>
+            | "M" (Mask) <br> <br>
+&ltlen&gt := VLEN <br> <br>
 &ltparameters&gt := /* empty */ <br>
-                  | &ltparameter&gt &ltopt-align&gt &ltparameters&gt <br>
+                  | &ltparameter&gt &ltopt-align&gt &ltparameters&gt <br> <br>
 &ltparameter&gt := "s" // linear parameter, variable stride, decimal number is <br>
                        // the position # of stride argument, starting from 0 <br>
                  | "l" &ltnumber&gt // linear parameter, constant stride <br>
                  | "u" // uniform parameter <br>
-                 | "v" // vector parameter <br>
+                 | "v" // vector parameter <br> <br>
 &ltopt-align&gt := /* empty*/ <br>
-                 | "a" non-negative decimal integer <br>
+                 | "a" non-negative decimal integer <br> <br>
 &ltnumber&gt := [n] non-negative decimal integer // n indicates negative <br>
 
 
