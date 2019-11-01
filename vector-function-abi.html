@@ -163,26 +163,25 @@ annotation is an important part of this ABI. It allows caller and callee
 functions to be separately compiled. Using the function prototypes in header
 files to communicate vector function annotation information, the compiler can
 perform function matching when vectorizing code at call sites.  The vector
-function name is manged as the concatenation of the following items:
+function name is mangled as the concatenation of the following items:
 
 &ltprefix&gt &ltisa&gt &ltmask&gt &ltlen&gt &ltparameters&gt "_"
-&ltoriginal_name&gt
-
-&ltprefix&gt := "_ZGV"
-&ltisa&gt := "b" (VSX)
-&ltmask&gt := "N" (No Mask)
-            | "M" (Mask)
-&ltlen&gt := VLEN
-&ltparameters&gt := /* empty */
-                  | &ltparameter&gt &ltopt-align&gt &ltparameters&gt
-&ltparameter&gt := "s" // linear parameter, variable stride, decimal number is
-                       // the position # of stride argument, starting from 0
-                 | "l" &ltnumber&gt // linear parameter, constant stride
-                 | "u" // uniform parameter
-                 | "v" // vector parameter
-&ltopt-align&gt := /* empty*/
-                 | "a" non-negative decimal integer
-&ltnumber&gt := [n] non-negative decimal integer // n indicates negative
+&ltoriginal_name&gt <br>
+&ltprefix&gt := "_ZGV" <br>
+&ltisa&gt := "b" (VSX) <br>
+&ltmask&gt := "N" (No Mask) <br>
+            | "M" (Mask) <br>
+&ltlen&gt := VLEN <br>
+&ltparameters&gt := /* empty */ <br>
+                  | &ltparameter&gt &ltopt-align&gt &ltparameters&gt <br>
+&ltparameter&gt := "s" // linear parameter, variable stride, decimal number is <br>
+                       // the position # of stride argument, starting from 0 <br>
+                 | "l" &ltnumber&gt // linear parameter, constant stride <br>
+                 | "u" // uniform parameter <br>
+                 | "v" // vector parameter <br>
+&ltopt-align&gt := /* empty*/ <br>
+                 | "a" non-negative decimal integer <br>
+&ltnumber&gt := [n] non-negative decimal integer // n indicates negative <br>
 
 
 </ol>
