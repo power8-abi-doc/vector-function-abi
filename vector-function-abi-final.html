@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang=en>
-<head><title> POWER8 VSX Vector Function ABI Specification </title>
+<head><title> POWER Architecture Vector Function Application Binary Interface
+Specification
+</title>
 </head>
 <body>
 
 <h1>
-Vector Function Application Binary Interface Specification for POWER8 VSX ISA
+Vector Function Application Binary Interface Specification for POWER
+Architecture
 </h1>
 
 <h2> Vector Function ABI Overview </h2>
@@ -45,6 +48,12 @@ per invocation of the vector function)</li>
 <li> Compiler generated vector function variants </li>
 </ul>
 
+This specification shall be considered an extension to the OpenPOWER 64-bit ELF
+V2 ABI Specification for Power Architecture [2]. As such, it applies to Power
+ISA 2.07 and above, requiring the VSX vector facility described in that ABI and
+ISA.
+<br><br>
+
 <h2> Calling convention </h2>
 The vector functions should use the calling convention described in Section
 2.2, Function Calling Sequence, of OpenPOWER 64-bit ELF V2 ABI Specification
@@ -63,15 +72,16 @@ vector length. CDT is defined in the following order:
 <li> For non-void function, the CDT is the return type. </li>
 <li> If the function has any non-uniform, non-linear parameters, then the CDT
 is the type of the first such parameter. </li>
-<li> If the CDT determined by a) or b) above is struct, union, or class type
-which is pass-by-value (except for the type that maps to the built-in complex
-data type), the characteristic data type is int. </li>
+<li> If the CDT determined by a) or b) above is a nonhomogeneous struct, union,
+or class type (see "Parameter Passing in Registers" in [2]) which is
+pass-by-value (except for the type that maps to the built-in complex data
+type), the characteristic data type is int. </li>
 <li> If none of the above three cases is applicable, the CDT is int. </li>
 </ol>
 The VLEN is then determined based on the CDT and the size of the vector
-register for POWER8 VSX ISA. VLEN is computed using the formula below: <br>
+register for the ISA. VLEN is computed using the formula below: <br>
 VLEN = sizeof(vector_register) / sizeof(CDT). <br>
-POWER8 VSX ISA has sizeof(vector_register) = 16.
+VSX has sizeof(vector_register) = 16.
 
 <h2> Mapping from element data type to vector data type </h2>
 The vector data types for parameters are selected depending on ISA, vector
@@ -84,16 +94,14 @@ mapping from element data type to vector data type is described below.
 <ul>
 <li> The bit size of the vector data type of a parameter is computed as:<br>
 size_of_vector_data_type = VLEN * sizeof(original_parameter_data_type) * 8 <br>
-For instance, for a POWER8 VSX ISA vector function with parameter data type
-"int": <br>
+For instance, for a VSX vector function with parameter data type "int": <br>
 VLEN = 4, size_of_vector_data_type = 4 * 4 * 8 = 128 bits, which means one
 argument of type vector signed int. <br>
 </li>
 <li>
 If the size_of_vector_data_type is greater than the width of the vector
 register, multiple vector registers are used for passing the vector parameter.
-For instance, a POWER8 VSX ISA vector function with parameter data type of
-"double": <br>
+For instance, a VSX vector function with parameter data type of "double": <br>
 VLEN = 4, size_of_vector_data_type = 4 * 8 * 8 = 256 bits, the vector data type
 is vector double [2], which means 2 arguments of type vector double are to be
 passed.
@@ -105,33 +113,27 @@ When a parameter in the original data type results in one argument in the
 vector function, the ordering rule is a simple one-to-one match with the
 original argument order. <br>
 For example, when the original argument list is (int a, float b, int c), VLEN
-is 4, the ISA is POWER8 VSX, and all a, b, and c are classified vector
-parameters, the vector function argument list becomes (vector int vec_a, vector
-float vec_b, vector int vec_c). <br>
+is 4, and all a, b, and c are classified vector parameters, the vector function
+argument list becomes (vector int vec_a, vector float vec_b, vector int vec_c).
+<br>
 There are cases where a single parameter in the original data type results in
 multiple arguments in the vector function. Those additional second and
 subsequent arguments are inserted in the argument list right after the
 corresponding first argument, not appended to the end of the argument list of
 the vector function. For example, if the original argument list is (int a,
-double b, int c), VLEN is 4, the ISA is POWER8 VSX, and all a, b, and c are
-classified as vector parameters, the vector function argument list becomes
-(vector int vec_a, vector double vec_b1, vector double vec_b2, vector int
-vec_c).
+double b, int c), VLEN is 4, and all a, b, and c are classified as vector
+parameters, the vector function argument list becomes (vector int vec_a, vector
+double vec_b1, vector double vec_b2, vector int vec_c). For an example
+involving homogeneous aggregates, if the original argument list (int a, double
+b[2], int c), VLEN is 4, and all a, b, and c are classified as vector
+parameters, the vector function argument list becomes (vector int vec_a, vector
+double vec_b0_0, vector double vec_b0_1, vector double vec_b1_0, vector double
+vec_b1_1, vector int vec_c).
 
 <h2> Masking of Vector Functions </h2>
-A masked vector function variant used for invocation in conditional statements
-(please refer to [1] for details) additionally takes an implicit mask argument,
-which disables processing of some of the vector lanes. <br>
-For masked vector functions, the additional "mask" parameters are required. <br>
-Each element of "mask" parameters has the data type of the CDT (see Section 2.2
-above). The number of mask parameters is the same as the number of parameters
-required to pass the vector of CDT for the given length. The value of a mask
-parameter must be either of bit patterns of all ones or all zeros for each
-element. <br>
-For each element of the vector, if the corresponding mask value is zero, the
-return value associated to that element is zero. <br>
-Mask parameters are passed after all other parameters in the same order of the
-parameters to which they apply.
+Masking of vector functions is not currently supported by the Power ISA.
+Compilers should not generate code for masked variants of vector functions
+until such time (if ever) as masked vector instructions are supported.
 
 <h2> Vector Function Name Mangling </h2>
 The name mangling of generated vector functions based on standardized
@@ -145,25 +147,37 @@ function name is mangled as the concatenation of the following items:
 &ltoriginal_name&gt <br> <br>
 &ltprefix&gt := "_ZGV" <br> <br>
 &ltoriginal_name&gt := name of scalar function, including C++ mangling <br> <br>
-&ltisa&gt := "b" (POWER8 VSX) <br> <br>
+&ltisa&gt := "b" (VSX) <br> <br>
 &ltmask&gt := "N" (No Mask) <br>
             | "M" (Mask) <br> <br>
 &ltlen&gt := VLEN <br> <br>
 &ltparameters&gt := /* empty */ <br>
                   | &ltparameter&gt &ltopt-align&gt &ltparameters&gt <br> <br>
-&ltparameter&gt := "s" // linear parameter, variable stride, decimal number is <br>
-                       // the position # of stride argument, starting from 0 <br>
-                 | "l" &ltnumber&gt // linear parameter, constant stride <br>
+&ltparameter&gt := "l" &ltstride&gt // linear(x:linear_step) or
+                                    // linear(val(x):linear_step) when x is a pointer
+<br>
+                 | "R" &ltstride&gt // linear(ref(x):linear_step) <br>
+                 | "U" &ltstride&gt // linear(uval(x):linear_step) <br>
+                 | "L" &ltstride&gt // linear(val(x):linear_step) or
+                                    // linear(x:linear_step) when x is a reference <br>
                  | "u" // uniform parameter <br>
                  | "v" // vector parameter <br> <br>
+&ltstride&gt := /* empty */ // linear_step is equal to 1
+              | "s" &ltnon-negative-decimal-number&gt // linear_step is passed
+// in another argument, decimal number is the position # of linear_step
+// argument, which starts from 0 <br>
+              | &ltnumber&gt // linear_step is literally constant stride
 &ltnumber&gt := [n] non-negative decimal integer // n indicates negative <br>
 &ltopt-align&gt := /* empty*/ <br>
                  | "a" non-negative decimal integer <br> <br>
 
-Please refer to section 2.7, Compiler generated variants of vector function,
-below for examples of vector function name mangling.
+Please refer to section 2.7, Compiler generated variants of vector functions,
+below, for examples of vector function name mangling.
+<br><br>
+Note that the value "M" for the &ltmask&gt field is reserved until such time
+(if ever) as masked vector instructions are supported in the Power ISA.
 
-<h2> Compiler generated variants of vector function </h2>
+<h2> Compiler generated variants of vector functions </h2>
 The compiler should generate vector variants, masked and/or umasked as
 appropriate, depending on the SIMD construct used to enable vectorization.
 Compiler implementations must not generate calls to versions that are
@@ -171,26 +185,26 @@ unavailable unless some non-standard pragma or clause is used to declare those
 other versions available. <br>
 
 Example 1. <br>
-#pragma omp declare simd uniform(q) aligned(q:16) linear(k:1) <br>
+#pragma omp declare simd notinbranch uniform(q) aligned(q:16) linear(k:1) <br>
 float foo (float *q, float x, int k) <br>
 { <br>
   q[k] = q[k] + x; <br>
   return q[k]; <br>
 } <br>
 <br>
-Below is the list of generated function names or list of symbols provided by a
-library with the same pragma in "foo" prototype.
-<ol>
-<li> _ZGVbN4ua16vl_foo (POWER8 VSX ISA, unmasked version) </li>
-<li> _ZGVbM4ua16vl_foo (POWER8 VSX ISA, masked version) </li>
-</ol>
+Below is the generated function name or symbol provided by a library with the
+same pragma in "foo" prototype.
+<ul>
+<li> _ZGVbN4ua16vl_foo (VSX ISA, unmasked version) </li>
+</ul>
 
 Where "foo" is the original function name, "_ZGV" is the prefix of vector
-function names, "b" indicated the POWER8 VSX ISA and computed CDT, "N"
-indicates an unmasked version, "M" indicates a masked version, "4" is the
-vector length for the ISA, "ua16" indicates uniform(q) and align(a:32), "v"
-indicates second argument x is a vector argument, "l" indicates linear(k:1) - k
-is a linear variable whose stride is 1a. <br>
+function names, "b" indicates the VSX ISA and computed CDT, "N" indicates an
+unmasked version, "4" is the vector length for the ISA, "ua16" indicates
+uniform(q) and align(q:16), "v" indicates second argument x is a vector
+argument, "l" indicates linear(k:1) - k is a linear variable whose stride is
+1. <br>
+<br><br>
 
 Example  2. <br>
 #pragma omp declare simd notinbranch <br>
@@ -198,15 +212,16 @@ double foo (double x) <br>
 { <br>
   return x * x; <br>
 } <br>
-Below is the list of generated function names or list of symbols provided by a
-library with the same pragma in "foo" prototype.
+Below is the generated function name or symbol provided by a library with the
+same pragma in "foo" prototype.
 <ol>
-<li> _ZGVbN2v_foo (POWER8 VSX ISA, unmasked version) </li>
+<li> _ZGVbN2v_foo (VSX ISA, unmasked version) </li>
 </ol>
+
 Where "foo" is the original function name, "_ZGV" is the prefix of vector
-function names, "b" indicated the POWER8 VSX ISA, "N" indicates an unmasked
-version, "2" is the vector length for the ISA/CDT combination, "v" indicates
-single argument x is a vector argument. <br>
+function names, "b" indicates the VSX ISA, "N" indicates an unmasked version,
+"2" is the vector length for the ISA/CDT combination, "v" indicates single
+argument x is a vector argument. <br>
 
 <h2> References </h2>
 [1] OpenMP 4.0 Specification <br>
