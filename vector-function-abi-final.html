@@ -195,8 +195,7 @@ float foo (float *q, float x, int k) <br>
 { <br>
   q[k] = q[k] + x; <br>
   return q[k]; <br>
-} <br>
-<br>
+} <br> <br>
 
 Below is the vector function's prototype given "foo" and its associated pragma.
 <ul>
@@ -208,20 +207,19 @@ function names, "b" indicates the VSX ISA and computed CDT, "N" indicates an
 unmasked version, "4" is the vector length for the ISA, "ua16" indicates
 uniform(q) and align(q:16), "v" indicates second argument x is a vector
 argument, "l" indicates linear(k:1) - k is a linear variable whose stride is
-1. <br>
-<br><br>
+1. <br> <br>
 
 Example  2. <br>
 #pragma omp declare simd notinbranch <br>
 double foo (double x) <br>
 { <br>
   return x * x; <br>
-} <br>
-<br>
+} <br> <br>
+
 Below is the vector function's prototype given "foo" and its associated pragma.
-<ol>
+<ul>
 <li> vector double _ZGVbN2v_foo (vector double) </li>
-</ol>
+</ul>
 
 Where "foo" is the original function name, "_ZGV" is the prefix of vector
 function names, "b" indicates the VSX ISA, "N" indicates an unmasked version,
