@@ -187,7 +187,7 @@ The compiler should generate vector variants, masked and/or umasked as
 appropriate, depending on the SIMD construct used to enable vectorization.
 Compiler implementations must not generate calls to versions that are
 unavailable unless some non-standard pragma or clause is used to declare those
-other versions available. <br>
+other versions available. <br> <br>
 
 Example 1. <br>
 #pragma omp declare simd notinbranch uniform(q) aligned(q:16) linear(k:1) <br>
@@ -197,10 +197,10 @@ float foo (float *q, float x, int k) <br>
   return q[k]; <br>
 } <br>
 <br>
-Below is the generated function name or symbol provided by a library with the
-same pragma in "foo" prototype.
+
+Below is the vector function's prototype given "foo" and its associated pragma.
 <ul>
-<li> _ZGVbN4ua16vl_foo (VSX ISA, unmasked version) </li>
+<li> vector float _ZGVbN4ua16vl_foo (float *, vector float, int) </li>
 </ul>
 
 Where "foo" is the original function name, "_ZGV" is the prefix of vector
@@ -217,10 +217,10 @@ double foo (double x) <br>
 { <br>
   return x * x; <br>
 } <br>
-Below is the generated function name or symbol provided by a library with the
-same pragma in "foo" prototype.
+
+Below is the vector function's prototype given "foo" and its associated pragma.
 <ol>
-<li> _ZGVbN2v_foo (VSX ISA, unmasked version) </li>
+<li> vector double _ZGVbN2v_foo (vector double) </li>
 </ol>
 
 Where "foo" is the original function name, "_ZGV" is the prefix of vector
