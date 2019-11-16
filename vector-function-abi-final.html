@@ -17,28 +17,23 @@ compilers supporting SIMD constructs of OpenMP 4.0 [1] and above. These SIMD
 constructs are also available without OpenMP in GCC compilers that implement
 the __attribute__ ((__simd__)) for function declarations and definitions.
 <pre><br></pre>
-
 The ABI described here applies only for C/C++ functions.
 <pre><br></pre>
-
 Use of a SIMD construct for a function declaration or definition enables the
 creation of vector versions of the function from the scalar version of the
 function. The vector variants can be used to process multiple instances
 concurrently in a single invocation in a vector context (e.g., most typically
 in vectorizing loops during the optimization phase of compilation.)
 <pre><br></pre>
-
 For a function definition, use of #pragma omp declare simd or __attribute__
 ((__simd__)) enables creation of vector versions by the compiler.
 <pre><br></pre>
-
 For a function declaration, use of #pragma omp declare simd or __attribute__
 ((__simd__)) enables the compiler to know the exact list of available vector
 function implementations provided by a library. The library's vector functions
 will use the OpenMP pragma or GCC attribute SIMD constructs in their
 prototypes.
 <pre><br></pre>
-
 The Vector Function ABI defines a set of rules that caller and callee functions
 must obey. The rules consist of:
 <ul>
@@ -58,7 +53,6 @@ V2 ABI Specification for Power Architecture [2]. As such, it applies to Power
 ISA 2.07 and above, requiring the VSX vector facility described in that ABI and
 ISA.
 <pre><br></pre>
-
 <h2> Calling convention </h2>
 The vector functions should use the calling convention described in Section
 2.2, Function Calling Sequence, of OpenPOWER 64-bit ELF V2 ABI Specification
@@ -66,11 +60,14 @@ for Power Architecture [2] document.
 
 <h2> Vector Length </h2>
 Every vector variant of a SIMD-enabled function has a vector length (VLEN).
-<pre><br></pre>
+<pre>
+
+</pre>
 If OpenMP clause "simdlen" is used, the VLEN is the value of the argument of
 that clause. The VLEN value must be a power of 2.
-<pre><br></pre>
+<pre>
 
+</pre>
 In the other cases (GCC simd attribute used or OpenMP simdlen not used) the
 notion of a function's "characteristic data type" (CDT) is used to compute the
 vector length. CDT is defined in the following order:
