@@ -61,12 +61,10 @@ for Power Architecture [2] document.
 <h2> Vector Length </h2>
 Every vector variant of a SIMD-enabled function has a vector length (VLEN).
 <pre>
-
 </pre>
 If OpenMP clause "simdlen" is used, the VLEN is the value of the argument of
 that clause. The VLEN value must be a power of 2.
 <pre>
-
 </pre>
 In the other cases (GCC simd attribute used or OpenMP simdlen not used) the
 notion of a function's "characteristic data type" (CDT) is used to compute the
